@@ -39,7 +39,7 @@ namespace EasyCI.Domain.Logic.Services
 
                     var envVariableValue = Environment.GetEnvironmentVariable(envVariableName);
 
-                    command += IsWindowsCurrentOs() ? $"{dockerVariableName}=\"{envVariableValue}\"" : $"{dockerVariableName}={envVariableValue}";
+                    command += IsWindowsCurrentOs() ? $"{dockerVariableName}=\"{envVariableValue}\"" : $"{dockerVariableName}=\"{envVariableValue}\"";
                     command += " ";
                 }
             }
