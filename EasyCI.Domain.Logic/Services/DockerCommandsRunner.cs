@@ -35,12 +35,11 @@ namespace EasyCI.Domain.Logic.Services
 
                     var dockerVariableName = envVariable.Substring(0, envVariable.IndexOf('='));
                     var envVariableName = envVariable.Substring(envVariable.IndexOf('=') + 1, envVariable.Length - dockerVariableName.Length - 1)
-                        .Replace("\"", String.Empty)
-                        .Replace("$", String.Empty);
+                        .Replace("\"", String.Empty);
 
                     var envVariableValue = Environment.GetEnvironmentVariable(envVariableName);
 
-                    command += IsWindowsCurrentOs() ? $"{dockerVariableName}=\"{envVariableValue}\"" : envVariable;
+                    command += IsWindowsCurrentOs() ? $"{dockerVariableName}=\"{envVariableValue}\"" : $"{dockerVariableName}=\"{envVariableValue}\"";
                     command += " ";
                 }
             }
