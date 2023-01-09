@@ -88,8 +88,7 @@ namespace EasyCI.Domain.Logic.Services
 
         private List<string> GetDockerContainerIdsByImageName(string imageName)
         {
-            var client = new DockerClientConfiguration(
-                new Uri("npipe://./pipe/docker_engine")).CreateClient();
+            var client = new DockerClientConfiguration(GetDockerUriByCurrentOs()).CreateClient();
 
             var containers = client.Containers.ListContainersAsync(
                 new ContainersListParameters()
@@ -101,6 +100,12 @@ namespace EasyCI.Domain.Logic.Services
                 .Where(c => c.Image == imageName)
                 .Select(n => n.ID)
                 .ToList();
+        }
+
+        private Uri GetDockerUriByCurrentOs()
+        {
+            var url = IsWindowsCurrentOs() ? "npipe://./pipe/docker_engine" : "npipe://./pipe/docker_engine";
+            return new Uri(url);
         }
     }
 }
