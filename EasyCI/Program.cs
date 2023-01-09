@@ -4,15 +4,22 @@ var configProvider = new GitHubConfigurationProvider();
 var clientProvider = new GitHubClientProvider(configProvider);
 var repoStatusProvider = new GitHubRepositoryStatusProvider(clientProvider, configProvider);
 
+var envConfigProvider = new EnvironmentConfigProvider();
+var dockerRunner = new DockerCommandsRunner(envConfigProvider);
+
 string prevCommitSha = String.Empty;
 
 do
 {
     var lastCommitSha = repoStatusProvider.GetLastCommitSha();
-    if (string.IsNullOrEmpty(prevCommitSha) == false && prevCommitSha != lastCommitSha)
+    if (prevCommitSha != lastCommitSha)
     {
         prevCommitSha = lastCommitSha;
-        Console.WriteLine("New commit!");
+
+        dockerRunner.Build();
+        dockerRunner.Stop();
+        dockerRunner.RemoveContainers();
+        dockerRunner.Run();
     } 
     else
     {
