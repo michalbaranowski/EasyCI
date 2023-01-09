@@ -104,7 +104,7 @@ namespace EasyCI.Domain.Logic.Services
 
         private Uri GetDockerUriByCurrentOs()
         {
-            var url = IsWindowsCurrentOs() ? "npipe://./pipe/docker_engine" : "npipe://./pipe/docker_engine";
+            var url = IsWindowsCurrentOs() ? "npipe://./pipe/docker_engine" : "unix:///var/run/docker.sock";
             return new Uri(url);
         }
     }
