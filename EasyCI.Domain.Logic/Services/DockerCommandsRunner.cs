@@ -17,7 +17,7 @@ namespace EasyCI.Domain.Logic.Services
         public void Build()
         {
             var config = _configProvider.Get();
-            var command = $"build . -t {config.ImageName}";
+            var command = $"build {config.ProjectPath} -t {config.ImageName}";
 
             RunAsProcess(command);
         }
@@ -73,7 +73,6 @@ namespace EasyCI.Domain.Logic.Services
             using (var process = new Process())
             {
                 process.StartInfo.FileName = dockerPath;
-                process.StartInfo.WorkingDirectory = config.ProjectPath;
                 process.StartInfo.Arguments = command;
                 
                 process.Start();
