@@ -9,6 +9,19 @@ var dockerRunner = new DockerCommandsRunner(envConfigProvider);
 
 string prevCommitSha = String.Empty;
 
+var ghConfig = configProvider.Get();
+Console.WriteLine(ghConfig.RepositoryName);
+Console.WriteLine(ghConfig.BranchName);
+Console.WriteLine(ghConfig.Owner);
+Console.WriteLine(ghConfig.AccessToken);
+Console.WriteLine("===========================");
+
+var dockerConfig = envConfigProvider.Get();
+Console.WriteLine(dockerConfig.ProjectName);
+Console.WriteLine(dockerConfig.ImageName);
+Console.WriteLine(dockerConfig.EnvironmentVariables);
+Console.WriteLine("===========================");
+
 do
 {
     var lastCommitSha = repoStatusProvider.GetLastCommitSha();

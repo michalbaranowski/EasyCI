@@ -39,7 +39,7 @@ namespace EasyCI.Domain.Logic.Services
 
                     var envVariableValue = Environment.GetEnvironmentVariable(envVariableName);
 
-                    command += IsWindowsCurrentOs() ? $"{dockerVariableName}=\"{envVariableValue}\"" : $"{dockerVariableName}=\"{envVariableValue}\"";
+                    command += IsWindowsCurrentOs() ? $"{dockerVariableName}=\"{envVariableValue}\"" : $"{dockerVariableName}={envVariableValue}";
                     command += " ";
                 }
             }
@@ -66,8 +66,10 @@ namespace EasyCI.Domain.Logic.Services
 
         private void RunAsProcess(string command)
         {
+            Console.WriteLine("*** Command Start ***");
+            Console.WriteLine(command);
+            
             string dockerPath = IsWindowsCurrentOs() ? @"C:\Program Files\Docker\Docker\Resources\bin\docker.exe" : "/usr/bin/docker";
-            var config = _configProvider.Get();
 
             using (var process = new Process())
             {
@@ -77,6 +79,8 @@ namespace EasyCI.Domain.Logic.Services
                 process.Start();
                 process.WaitForExit();
             }
+
+            Console.WriteLine("*** Command End ***");
         }
 
         private bool IsWindowsCurrentOs()
