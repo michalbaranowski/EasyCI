@@ -8,10 +8,10 @@ namespace EasyCI.Domain.Logic.Services
     {
         public EnvironmentConfiguration Get()
         {
-            string path = Environment.GetEnvironmentVariable("EasyCI.ProjectPath").AssertValue();
-            string name = Environment.GetEnvironmentVariable("EasyCI.ProjectName").AssertValue();
-            string port = Environment.GetEnvironmentVariable("EasyCI.Port").AssertValue();
-            string envVariablesStr = Environment.GetEnvironmentVariable("EasyCI.EnvironmentVariables").AssertValue();
+            string path = Environment.GetEnvironmentVariable("EasyCI_ProjectPath").AssertValue();
+            string name = Environment.GetEnvironmentVariable("EasyCI_ProjectName").AssertValue();
+            string port = Environment.GetEnvironmentVariable("EasyCI_Port").AssertValue();
+            string envVariablesStr = Environment.GetEnvironmentVariable("EasyCI_EnvironmentVariables").AssertValue();
 
             var envVariablesList = envVariablesStr.Split(",").ToList();
 
