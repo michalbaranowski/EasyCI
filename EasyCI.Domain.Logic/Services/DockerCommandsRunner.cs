@@ -17,7 +17,8 @@ namespace EasyCI.Domain.Logic.Services
         public void Build()
         {
             var config = _configProvider.Get();
-            var command = $"build {config.ProjectPath} -t {config.ImageName}";
+            var exactPath = config.ProjectPath.Replace("~", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+            var command = $"build {exactPath} -t {config.ImageName}";
 
             RunAsProcess(command);
         }
