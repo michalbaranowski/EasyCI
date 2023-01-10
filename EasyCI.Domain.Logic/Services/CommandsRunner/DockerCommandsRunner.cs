@@ -21,7 +21,7 @@ namespace EasyCI.Domain.Logic.Services.CommandsRunner
         public void Build()
         {
             var config = _configProvider.Get();
-            var command = $"build {config.ExactPath} -t {config.ImageName}";
+            var command = $"build {config.ExactPath} -t {config.ImageName}:latest";
 
             RunAsProcess(command);
         }
@@ -52,24 +52,27 @@ namespace EasyCI.Domain.Logic.Services.CommandsRunner
             RunAsProcess(command);
         }
 
-        public void Stop()
+        public void StopContainers(List<string> containerIds)
         {
-            var config = _configProvider.Get();
-            var command = $"stop {string.Join(" ", GetDockerContainerIdsByImageName(config.ImageName))}";
-
+            var command = $"stop {string.Join(" ", containerIds)}";
             RunAsProcess(command);
         }
 
-        public void RemoveContainers()
+        public void RemoveContainers(List<string> containerIds)
         {
-            var config = _configProvider.Get();
-            var command = $"rm {string.Join(" ", GetDockerContainerIdsByImageName(config.ImageName))}";
-
+            var command = $"rm {string.Join(" ", containerIds)}";
             RunAsProcess(command);
         }
 
-        private List<string> GetDockerContainerIdsByImageName(string imageName)
+        public void RemoveImages(List<string> imageIds)
         {
+            var command = $"rmi {string.Join(" ", imageIds)}";
+            RunAsProcess(command);
+        }
+
+        public Dictionary<string, string> GetDockerContainerIdsWithImageIds()
+        {
+            var config = _configProvider.Get();
             var client = new DockerClientConfiguration(GetDockerUriByCurrentOs()).CreateClient();
 
             var containers = client.Containers.ListContainersAsync(
@@ -79,9 +82,9 @@ namespace EasyCI.Domain.Logic.Services.CommandsRunner
                 }).Result;
 
             return containers
-                .Where(c => c.Image == imageName)
-                .Select(n => n.ID)
-                .ToList();
+                .Where(c => c.Image == config.ImageName)
+                .ToDictionary(x => x.ID, x => x.ImageID);
+                
         }
 
         private Uri GetDockerUriByCurrentOs()

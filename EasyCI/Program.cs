@@ -21,9 +21,15 @@ do
         prevCommitSha = lastCommitSha;
 
         gitRunner.Pull();
+
+        var dictionary = dockerRunner.GetDockerContainerIdsWithImageIds();
+        var containerIdList = dictionary.Select(n => n.Key).ToList();
+        var imageIdList = dictionary.Select(n => n.Value).Distinct().ToList();
+
         dockerRunner.Build();
-        dockerRunner.Stop();
-        dockerRunner.RemoveContainers();
+        dockerRunner.StopContainers(containerIdList);
+        dockerRunner.RemoveContainers(containerIdList);
+        dockerRunner.RemoveImages(imageIdList);
         dockerRunner.Run();
     } 
     else

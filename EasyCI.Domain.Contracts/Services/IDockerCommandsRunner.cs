@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EasyCI.Domain.Contracts.Services
+﻿namespace EasyCI.Domain.Contracts.Services
 {
     public interface IDockerCommandsRunner
     {
+        Dictionary<string, string> GetDockerContainerIdsWithImageIds();
         void Build();
         void Run();
-        void Stop();
-        void RemoveContainers();
+        void StopContainers(List<string> containerIds);
+        void RemoveContainers(List<string> containerIds);
+        void RemoveImages(List<string> imageIds);
     }
 }
