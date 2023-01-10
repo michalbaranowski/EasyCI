@@ -21,7 +21,7 @@ namespace EasyCI.Domain.Logic.Services.CommandsRunner
         public void Build()
         {
             var config = _configProvider.Get();
-            var command = $"build {config.ExactPath} -t {config.ImageName}:latest";
+            var command = $"build --no-cache {config.ExactPath} -t {config.ImageName}:latest";
 
             RunAsProcess(command);
         }
