@@ -1,15 +1,19 @@
 ﻿using Docker.DotNet;
 using Docker.DotNet.Models;
+using EasyCI.Domain.Contracts.Models;
 using EasyCI.Domain.Contracts.Services;
-using System.Diagnostics;
+using EasyCI.Domain.Logic.Helpers;
 
-namespace EasyCI.Domain.Logic.Services
+namespace EasyCI.Domain.Logic.Services.CommandsRunner
 {
-    public class DockerCommandsRunner : IDockerCommandsRunner
+    public class DockerCommandsRunner : CommandsRunnerBase, IDockerCommandsRunner
     {
+        protected override AvailableApps CurrentApp => AvailableApps.Docker;
+
         private readonly IEnvironmentConfigProvider _configProvider;
 
-        public DockerCommandsRunner(IEnvironmentConfigProvider configProvider)
+        public DockerCommandsRunner(IAppPathResolver appPathResolver, IEnvironmentConfigProvider configProvider)
+            : base(appPathResolver)
         {
             _configProvider = configProvider;
         }
@@ -17,8 +21,7 @@ namespace EasyCI.Domain.Logic.Services
         public void Build()
         {
             var config = _configProvider.Get();
-            var exactPath = config.ProjectPath.Replace("~", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-            var command = $"build {exactPath} -t {config.ImageName}";
+            var command = $"build {config.ExactPath} -t {config.ImageName}";
 
             RunAsProcess(command);
         }
@@ -39,8 +42,8 @@ namespace EasyCI.Domain.Logic.Services
                         .Replace("\"", String.Empty);
 
                     var envVariableValue = Environment.GetEnvironmentVariable(envVariableName);
+                    command += $"{dockerVariableName}=\"{envVariableValue}\"";
 
-                    command += IsWindowsCurrentOs() ? $"{dockerVariableName}=\"{envVariableValue}\"" : $"{dockerVariableName}=\"{envVariableValue}\"";
                     command += " ";
                 }
             }
@@ -65,26 +68,6 @@ namespace EasyCI.Domain.Logic.Services
             RunAsProcess(command);
         }
 
-        private void RunAsProcess(string command)
-        {            
-            string dockerPath = IsWindowsCurrentOs() ? @"C:\Program Files\Docker\Docker\Resources\bin\docker.exe" : "/usr/bin/docker";
-
-            using (var process = new Process())
-            {
-                process.StartInfo.FileName = dockerPath;
-                process.StartInfo.Arguments = command;
-                
-                process.Start();
-                process.WaitForExit();
-            }
-        }
-
-        private bool IsWindowsCurrentOs()
-        {
-            var os = Environment.OSVersion;
-            return os.Platform == PlatformID.Win32NT;
-        }
-
         private List<string> GetDockerContainerIdsByImageName(string imageName)
         {
             var client = new DockerClientConfiguration(GetDockerUriByCurrentOs()).CreateClient();
@@ -103,7 +86,7 @@ namespace EasyCI.Domain.Logic.Services
 
         private Uri GetDockerUriByCurrentOs()
         {
-            var url = IsWindowsCurrentOs() ? "npipe://./pipe/docker_engine" : "unix:///var/run/docker.sock";
+            var url = CurrentOsHelper.IsWindows() ? "npipe://./pipe/docker_engine" : "unix:///var/run/docker.sock";
             return new Uri(url);
         }
     }

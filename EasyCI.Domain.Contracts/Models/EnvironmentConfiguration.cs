@@ -16,6 +16,9 @@
         }
 
         public string ProjectPath { get; }
+
+        public string ExactPath => ProjectPath.Replace("~", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+
         public string ProjectName { get; }
 
         public string ImageName => ProjectName.ToLower();
