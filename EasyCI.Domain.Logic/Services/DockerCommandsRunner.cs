@@ -25,7 +25,7 @@ namespace EasyCI.Domain.Logic.Services
         public void Run()
         {
             var config = _configProvider.Get();
-            var command = $"run -p {config.Port}:80 ";
+            var command = $"run -d -p {config.Port}:80 ";
 
             if (config.EnvironmentVariables.Any())
             {
