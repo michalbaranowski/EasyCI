@@ -54,18 +54,33 @@ namespace EasyCI.Domain.Logic.Services.CommandsRunner
 
         public void StopContainers(List<string> containerIds)
         {
+            if (containerIds.Any() == false)
+            {
+                return;
+            }
+
             var command = $"stop {string.Join(" ", containerIds)}";
             RunAsProcess(command);
         }
 
         public void RemoveContainers(List<string> containerIds)
         {
+            if (containerIds.Any() == false)
+            {
+                return;
+            }
+
             var command = $"rm {string.Join(" ", containerIds)}";
             RunAsProcess(command);
         }
 
         public void RemoveImages(List<string> imageIds)
         {
+            if (imageIds.Any() == false)
+            {
+                return;
+            }
+
             var command = $"rmi {string.Join(" ", imageIds)}";
             RunAsProcess(command);
         }
