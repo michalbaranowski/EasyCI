@@ -29,7 +29,7 @@ namespace EasyCI.Domain.Logic.Services.CommandsRunner
         public void Run()
         {
             var config = _configProvider.Get();
-            var command = $"run -d -p {config.Port}:80 ";
+            var command = $"run -d -p {config.HttpPort}:80 {config.HttpsPort}:443 ";
 
             if (config.EnvironmentVariables.Any())
             {

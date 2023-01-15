@@ -5,12 +5,14 @@
         public EnvironmentConfiguration(
             string projectPath,
             string projectName,
-            string port,
+            string httpPort,
+            string httpsPort,
             List<string> environmentVariables)
         {
             ProjectPath = projectPath;
             ProjectName = projectName;
-            Port = port;
+            HttpPort = httpPort;
+            HttpsPort = httpsPort;
             EnvironmentVariables = environmentVariables;
                 
         }
@@ -23,7 +25,8 @@
 
         public string ImageName => ProjectName.ToLower();
 
-        public string Port { get; }
+        public string HttpPort { get; }
+        public string HttpsPort { get; }
         public List<string> EnvironmentVariables { get; } = new List<string>();
     }
 }
